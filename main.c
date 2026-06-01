@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
-// #include <time.h>
 
 #define ROWS 10
 #define COLUMNS 15
@@ -54,8 +53,8 @@ void clear() {
 }
 
 // draws ghost and player
-void draw() {
-    // puts it at top again
+void drawBoard() {
+    // replaces previous block by printing to terminal from same spot as before
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD coord = {0, 0};
     SetConsoleCursorPosition(hOut, coord);
@@ -96,7 +95,7 @@ void gameLogic() {
         score += 10;
         maze[py][px] = ' ';
     }
-    // making ghost slower --> runs 5 * 50ms = 250ms period between moves
+    // ghost is 5x slower (5 * 50ms = 250ms period)
     gtimer++;
     if (gtimer == 5) {
         int ngx = gx;
@@ -128,14 +127,14 @@ int main() {
     system("cls");
 
     while (!gameover) {
-        draw();
+        drawBoard();
         checkInput();
         gameLogic();
         Sleep(50);
     }
 
     clear();
-    printf("Game over! Your final score was: %d/860 points.\n", score);
+    printf("Game over! Your final score was: %d/870 points.\n", score);
 
     return 0;
 }
