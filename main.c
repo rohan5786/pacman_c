@@ -135,7 +135,7 @@ int main() {
     }
 
     clear();
-    printf("Game over! Your final score was: %d points.\n", score);
+    printf("Game over! Your final score was: %d/860 points.\n", score);
 
     return 0;
 }
