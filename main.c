@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <windows.h>
+
 
 #define ROWS 10
 #define COLUMNS 15
@@ -101,8 +103,13 @@ void gameLogic() {
         int ngx = gx;
         int ngy = gy;
 
-        if (px != gx) ngx = gx + ((px < gx) ? -1 : 1);
-        if (py != gy) ngy = gy + ((py < gy) ? -1 : 1);
+        const bool below = (gy + 1 < ROWS) && maze[gy + 1][gx] == '#';
+        const bool above = (gy - 1 >= 0) && maze[gy - 1][gx] == '#';
+        const bool left = (gx - 1 >= 0) && maze[gy][gx - 1] == '#';
+        const bool right = (gx + 1 < COLUMNS) && maze[gy][gx + 1] == '#';
+
+        if (px != gx || below || above) ngx = gx + ((px < gx) ? -1 : 1);
+        if (py != gy || left || right) ngy = gy + ((py < gy) ? -1 : 1);
 
         if (ngx >= 0 && ngx < COLUMNS && maze[gy][ngx] != '#') gx = ngx;
         if (ngy >= 0 && ngy < ROWS && maze[ngy][gx] != '#') gy = ngy;
