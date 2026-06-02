@@ -102,14 +102,26 @@ void gameLogic() {
     if (gtimer == 5) {
         int ngx = gx;
         int ngy = gy;
+        const int dx = (px < gx) ? -1 : 1;
+        const int dy = (py < gy) ? -1 : 1;
 
-        const bool below = (gy + 1 < ROWS) && maze[gy + 1][gx] == '#';
-        const bool above = (gy - 1 >= 0) && maze[gy - 1][gx] == '#';
-        const bool left = (gx - 1 >= 0) && maze[gy][gx - 1] == '#';
-        const bool right = (gx + 1 < COLUMNS) && maze[gy][gx + 1] == '#';
+        if (px != gx) ngx = gx + dx;
+        else {
+            while (ngx < COLUMNS && maze[gy + dy][ngx] == '#') ngx++;
+            if (ngx == COLUMNS) {
+                ngx = gx; // reset if bounds got met
+                while (ngx >= 0 && maze[gy + dy][ngx] == '#') ngx--;
+            }
+        }
 
-        if (px != gx || below || above) ngx = gx + ((px < gx) ? -1 : 1);
-        if (py != gy || left || right) ngy = gy + ((py < gy) ? -1 : 1);
+        if (py != gy) ngy = gy + dy;
+        else {
+            while (ngy < ROWS && maze[ngy][gx + dx] == '#') ngy++;
+            if (ngy == ROWS) {
+                ngy = gy;
+                while (ngy >= 0 && maze[ngy][gx + dx] == '#') ngy--;
+            }
+        }
 
         if (ngx >= 0 && ngx < COLUMNS && maze[gy][ngx] != '#') gx = ngx;
         if (ngy >= 0 && ngy < ROWS && maze[ngy][gx] != '#') gy = ngy;
