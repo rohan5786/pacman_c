@@ -104,7 +104,7 @@ void drawBoard(char maze[ROWS][COLUMNS + 1]) {
     COORD coord = {0, 0};
     SetConsoleCursorPosition(hOut, coord);
 
-    printf("Controls: WASD | q = quit\n");
+    printf("Controls: WASD/Arrow keys | q = quit\n");
     printf("Score: %d\n---------------------------------------------------------------\n\n", score);
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLUMNS; j++) {
@@ -124,10 +124,10 @@ void drawBoard(char maze[ROWS][COLUMNS + 1]) {
 void checkInput(char maze[ROWS][COLUMNS + 1]) {
     int npx = px;
     int npy = py;
-    if (GetAsyncKeyState('A') & 0x8000) npx--;
-    if (GetAsyncKeyState('S') & 0x8000) npy++;
-    if (GetAsyncKeyState('D') & 0x8000) npx++;
-    if (GetAsyncKeyState('W') & 0x8000) npy--;
+    if (GetAsyncKeyState('A') & 0x8000 || GetAsyncKeyState(VK_LEFT) & 0x8000) npx--;
+    if (GetAsyncKeyState('S') & 0x8000 || GetAsyncKeyState(VK_DOWN) & 0x8000) npy++;
+    if (GetAsyncKeyState('D') & 0x8000 || GetAsyncKeyState(VK_RIGHT) & 0x8000) npx++;
+    if (GetAsyncKeyState('W') & 0x8000 || GetAsyncKeyState(VK_UP) & 0x8000) npy--;
     if (GetAsyncKeyState('Q') & 0x8000) gameover = 1;
 
     if (npx >= 0 && npx < COLUMNS && maze[py][npx] != '#') px = npx;
