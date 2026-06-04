@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <windows.h>
-
+#include <time.h>
 
 #define ROWS 10
 #define COLUMNS 15
@@ -12,7 +12,7 @@ int px, py;
 int gx, gy;
 int gtimer;
 
-char maze[ROWS][COLUMNS + 1] = {
+char maze1[ROWS][COLUMNS + 1] = {
     "#######.#######",
     "#..##.....##..#",
     "#.............#",
@@ -25,14 +25,57 @@ char maze[ROWS][COLUMNS + 1] = {
     "###############"
 };
 
+char maze2[ROWS][COLUMNS + 1] = {
+    "###...###...###",
+    "#.#...#.#...#.#",
+    "#.............#",
+    "...###...###...",
+    "...............",
+    "...###...###...",
+    "#.............#",
+    "#.#...#.#...#.#",
+    "####.......####",
+    "###############"
+};
+
+char maze3[ROWS][COLUMNS + 1] = {
+    "###############",
+    "#.....#.##....#",
+    "#.###.#.#####.#",
+    "#.#...#.....#.#",
+    "#.#.#######.#.#",
+    "#.#.........#.#",
+    "#.#####.###.#.#",
+    "#.......#...#.#",
+    "#######.......#",
+    "###############"
+};
+
+char maze4[ROWS][COLUMNS + 1] = {
+    "#######.#######",
+    "#.............#",
+    "#.##.......##.#",
+    "...............",
+    "....##...##....",
+    "...............",
+    "#.##.......##.#",
+    "#.............#",
+    "#.............#",
+    "###############"
+};
+
+const int totals[] = {870, 890, 610, 990};
+const int mazeTotal = sizeof(totals) / sizeof(int);
+
 void setup() {
     gameover = 0;
     score = 0;
-    px = 8;
+    px = 7;
     py = 1;
-    gx = 8;
+    gx = 7;
     gy = ROWS - 1;
     gtimer = 0;
+    srand(time(NULL));
 }
 
 // clears screen
@@ -55,7 +98,7 @@ void clear() {
 }
 
 // draws ghost and player
-void drawBoard() {
+void drawBoard(char maze[ROWS][COLUMNS + 1]) {
     // replaces previous block by printing to terminal from same spot as before
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD coord = {0, 0};
@@ -78,7 +121,7 @@ void drawBoard() {
 }
 
 // processes player inputs
-void checkInput() {
+void checkInput(char maze[ROWS][COLUMNS + 1]) {
     int npx = px;
     int npy = py;
     if (GetAsyncKeyState('A') & 0x8000) npx--;
@@ -92,7 +135,7 @@ void checkInput() {
 }
 
 // score + collision logic
-void gameLogic() {
+void gameLogic(char maze[ROWS][COLUMNS + 1]) {
     if (maze[py][px] == '.') {
         score += 10;
         maze[py][px] = ' ';
@@ -132,10 +175,31 @@ void gameLogic() {
         gameover = 1;
 }
 
+// a pointer to a bunch of (COLUMNS + 1)-long char arrays in a row in memory
+char (*setMap(int mapNum))[COLUMNS + 1] {
+    switch (mapNum) {
+        case 1:
+            return maze1;
+        case 2:
+            return maze2;
+        case 3:
+            return maze3;
+        case 4:
+            return maze4;
+    }
+}
+
 // running everything
 int main() {
     setup();
 
+    int mapNum = 1; // map type
+    printf("1-4: Set Map #\nelse: random\nEnter your map #: ");
+    scanf("%d", &mapNum);
+    if (mapNum < 1 || mapNum > mazeTotal) 
+        mapNum = rand() % mazeTotal;
+    char (*maze)[COLUMNS + 1] = setMap(mapNum);
+    
     // clear cursor stuff idk
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO cursorInfo;
@@ -146,14 +210,14 @@ int main() {
     system("cls");
 
     while (!gameover) {
-        drawBoard();
-        checkInput();
-        gameLogic();
+        drawBoard(maze);
+        checkInput(maze);
+        gameLogic(maze);
         Sleep(50);
     }
 
     clear();
-    printf("Game over! Your final score was: %d/870 points.\n", score);
+    printf("Game over! Your final score was: %d/%d points.\n", score, totals[mapNum - 1]);
 
     return 0;
 }
