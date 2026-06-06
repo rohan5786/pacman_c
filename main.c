@@ -104,7 +104,6 @@ void drawBoard(char maze[ROWS][COLUMNS + 1]) {
     COORD coord = {0, 0};
     SetConsoleCursorPosition(hOut, coord);
 
-    printf("Controls: WASD/Arrow keys | q = quit\n");
     printf("Score: %d\n---------------------------------------------------------------\n\n", score);
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLUMNS; j++) {
@@ -194,7 +193,7 @@ int main() {
     setup();
 
     int mapNum = 1; // map type
-    printf("1-4: Set Map #\nelse: random\nEnter your map #: ");
+    printf("1-4: Set Map #\nelse: random\nControls: WASD/Arrow keys | q = quit\nEnter your map #: ");
     scanf("%d", &mapNum);
     if (mapNum < 1 || mapNum > mazeTotal) 
         mapNum = rand() % mazeTotal;
